@@ -1,0 +1,15 @@
+html {
+  overflow: hidden;
+}
+
+body {
+  background-color: #DBDD91;
+  font-family: 'Merriweather', serif;
+  width: 100vw;
+  height: 100vh;
+}
+
+.App {
+  margin: 0px auto;
+  max-width: 900px;
+}

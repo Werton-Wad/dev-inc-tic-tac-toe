@@ -1,0 +1,21 @@
+.content {
+    text-align: center;
+}
+.main {
+    display: flex;
+    justify-content: space-around;
+}
+.logo-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.logo {
+   width: auto;
+   height: 100px
+}
+.winner-message {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
+}

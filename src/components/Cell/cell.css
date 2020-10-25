@@ -1,0 +1,30 @@
+.cell {
+    box-sizing: border-box;
+    color: black;
+    border: 7px solid black;
+    margin: -7px -7px 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+    flex-basis: 200px;
+    height: 200px;
+}
+.cell-content {
+    display: block;
+    text-shadow: #533d4a 1px 1px, #533d4a 2px 2px, #533d4a 3px 3px, #533d4a 4px 4px;
+}
+.cell-win {
+    -webkit-animation: cell-win 3s linear infinite;
+    animation: cell-win 3s linear infinite;
+  }
+  @-webkit-keyframes cell-win {
+    0% { color: rgba(255, 0, 0, 1); }
+    50% { color: rgba(0, 0, 0, 0); }
+    100% { color: rgba(255, 0, 0, 1); }
+  }
+  @keyframes cell-win {
+    0% { color: rgba(255, 0, 0, 1); }
+    50% { color: rgba(0, 0, 0, 0); }
+    100% { color: rgba(255, 0, 0, 1); }
+  }
