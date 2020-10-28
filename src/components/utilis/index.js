@@ -1,5 +1,6 @@
+
 const createArray = n => {
-  return Array.from({ length: n }, el => null);
+  return Array.from({ length: n }, el => null );
 }
 const checkArr = arr => {
   return arr.every(el => el);
@@ -23,27 +24,10 @@ const calculateWinner = (squares) => {
   }
   return null;
 }
-
 const playSound = (url) => {
   const audio = new Audio(url);
   audio.play();
 }
-
-const colorWinCells = (cells, winner) => {
-  const $cells = document.querySelectorAll('.cell');
-  cells.forEach((_, i ) => {
-    if (winner.includes(i)) {
-      $cells[i].classList.add('cell-win');
-    }
-  })
-}
-const clearColorWinCells = () => {
-  const $cells = document.querySelectorAll('.cell-win');
- for (let i = 0; i < $cells.length; i++) {
-   $cells[i].classList.remove('cell-win');
- }
-}
-
 const undoLastMove = (cells, index) => {
   return cells.filter((_, i) => i !== index);
 }
@@ -51,7 +35,9 @@ const undoLastMove = (cells, index) => {
 const computerMove = (cells) => {
   const blankCells = [];
   for (let i = 0; i < cells.length; i++) {
-    if (!cells[i]) blankCells.push(i);
+    if (!cells[i]) {
+      blankCells.push(i);
+    }
   }
   return blankCells[Math.floor(Math.random() * blankCells.length)];
 }
@@ -61,8 +47,6 @@ const computerMove = (cells) => {
     calculateWinner: calculateWinner,
     checkArr: checkArr,
     playSound: playSound,
-    colorWinCells: colorWinCells,
-    clearColorWinCells: clearColorWinCells,
     undoLastMove: undoLastMove,
     computerMove: computerMove,
 }

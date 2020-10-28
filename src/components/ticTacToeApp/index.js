@@ -2,12 +2,11 @@ import React from 'react';
 
 import { utilis } from '../utilis'
 import './tic-tac-toe.css';
+// import '../Cell/cell.css';
 import { soundGame, soundEndGame } from '../../config';
 import ListCells from '../ListCells';
 import logo from '../../logo.png';
-import ButtonTryAgan from '../ButtonTryAgain';
-import ButtonReset from '../ButtonReset';
-import ButtonUndo from '../ButtonUndo';
+import Button from '../Button';
 import ModalWindow from '../StartMenu';
 
 class TicTacToeApp extends React.Component {
@@ -21,94 +20,116 @@ class TicTacToeApp extends React.Component {
         computerMode: false,
         player: 'X',
     }
+    listCellsRef = React.createRef();
     handleClickCell = (i) => {
-        const cells = [...this.state.cells];
-        const winner = utilis.calculateWinner(this.state.cells);
+        const { cells, isNext, computerMode } = this.state;
+        const copyCells = [...cells];
+        const winner = utilis.calculateWinner(cells);
         if (winner) {
             this.setState({ winner });
             return;
         }
         utilis.playSound(soundGame);
-        cells[i] = this.state.isNext ? 'X' : 'O';
+        copyCells[i] = isNext ? 'X' : 'O';
         this.setState({
-            cells,
-            isNext: !this.state.isNext,
+            cells: copyCells,
+            isNext: !isNext,
             winner: winner,
             lastMove: i,
         }, () => {
-            if (this.state.computerMode) setTimeout(this.handleComputerMove, 400);
+            if (computerMode) setTimeout(this.handleComputerMove, 400);
         });
     }
     handleComputerMove = () => {
-        const winner = utilis.calculateWinner(this.state.cells);
+        const { cells, isNext } = this.state;
+        const winner = utilis.calculateWinner(cells);
         if (winner) {
             this.setState({ winner });
             return;
         }
-        const cells = [...this.state.cells];
-        const computerMove = utilis.computerMove(this.state.cells);
+        const copyCells = [...cells];
+        const computerMove = utilis.computerMove(cells);
         utilis.playSound(soundGame);
-        cells[computerMove] = this.state.isNext ? 'X' : 'O';
-        this.setState({ cells, isNext: !this.state.isNext, lastMoveComputer: computerMove })
+        copyCells[computerMove] = isNext ? 'X' : 'O';
+        this.setState({ cells: copyCells, isNext: isNext, lastMoveComputer: computerMove })
     }
-    handleIsComputerMode = (isComputerMode) => {
+    handleIsComputerMode = (isComputerMode) => () => {
         this.setState({ isStart: !this.state.isStart, computerMode: isComputerMode });
     }
-    handleChoosePlayer = (e, player) => {
-        const isNext = (player === 'X');
-        this.setState({ isNext, player });
+    handleChoosePlayer = (e) => {
+        const isNext = (e.target.value === 'X');
+        this.setState({ isNext, player: e.target.value });
     }
-    handleClickButtonTryAgain = () => {
+    handleClickTryAgain = () => {
         this.setState({ cells: utilis.createArray(9), isNext: true, winner: '' })
-        utilis.clearColorWinCells();
+        this.clearColorWinCells();
     }
-    handleClickButtonReset = () => {
+    handleClickReset = () => {
         this.setState({ cells: utilis.createArray(9), isNext: true, winner: '', isStart: true })
-        utilis.clearColorWinCells();
+        this.clearColorWinCells();
     }
-    handleClickButtonUndo = () => {
-        const cells = [...this.state.cells];
-        if (this.state.computerMode) {
-            cells[this.state.lastMoveComputer] = null;
-            cells[this.state.lastMove] = null;
-            this.setState({ cells });
+    handleClickUndo = () => {
+        const { cells, lastMove, lastMoveComputer, computerMode, isNext } = this.state;
+        const copyCells = [...cells];
+        if (computerMode) {
+            copyCells[lastMoveComputer] = null;
+            copyCells[lastMove] = null;
+            this.setState({ cells: copyCells });
             return;
         }
-        cells[this.state.lastMove] = null;
-        this.setState({ cells, isNext: !this.state.isNext });
+        copyCells[lastMove] = null;
+        this.setState({ cells: copyCells, isNext: !isNext });
+    }
+    colorWinCells = (cells, winner) => {
+        const $cells = this.listCellsRef.current.children;
+        cells.forEach((_, i) => {
+            if (winner.includes(i)) {
+                $cells[i].classList.add('cell-win');
+            }
+        })
+    }
+    clearColorWinCells = () => {
+        const $cells = this.listCellsRef.current.children;
+        for (let i = 0; i < $cells.length; i++) {
+            if ($cells[i].classList.contains('cell-win')) {
+                $cells[i].classList.remove('cell-win');
+            }
+        }
     }
     render() {
-        const winner = utilis.calculateWinner(this.state.cells);
-        const isFilledCells = utilis.checkArr(this.state.cells);
+        const { cells, player, isStart } = this.state;
+        const winner = utilis.calculateWinner(cells);
+        const isFilledCells = utilis.checkArr(cells);
         if (winner) {
-            utilis.colorWinCells(this.state.cells, winner.winnerCoord);
+            this.colorWinCells(cells, winner.winnerCoord);
         }
         if (winner || isFilledCells) {
             utilis.playSound(soundEndGame);
         }
         return (
             <>
-                {this.state.isStart && <ModalWindow
+                {isStart && <ModalWindow
                     handleComputerMode={this.handleIsComputerMode}
                     handleChoosePlayer={this.handleChoosePlayer}
-                    player={this.state.player} />}
+                    player={player} />}
                 <div className="content">
                     <div className="logo-container">
                         <img className="logo" src={logo} alt="logo" />
                     </div>
-                    <ButtonReset handleClick={this.handleClickButtonReset} />
-                    {!winner && !utilis.checkArr(this.state.cells) && <ButtonUndo handleClick={this.handleClickButtonUndo} />}
+                    <Button handleClick={this.handleClickReset} buttonName="reset" />
+                    {!winner && !utilis.checkArr(cells) && <Button handleClick={this.handleClickUndo} buttonName="undo last move" />}
                     <div className="main">
                         <ListCells
-                            cells={this.state.cells}
-                            handleClickCell={this.handleClickCell} />
+                            cells={cells}
+                            handleClickCell={this.handleClickCell}
+                            listCellsRef={this.listCellsRef} />
                         {(winner || isFilledCells)
                             &&
                             (<div>
                                 <div className="winner-message">
                                     Winner: {winner ? winner.winner : 'draw'}
                                 </div>
-                                <ButtonTryAgan handleClick={this.handleClickButtonTryAgain} />
+                                <Button handleClick={this.handleClickTryAgain} buttonName="try again" />
                             </div>
                             )
                         }

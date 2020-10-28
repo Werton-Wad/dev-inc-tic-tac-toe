@@ -10,9 +10,9 @@ const Cell = (props) => {
         }
     }
     return (
-        <div className='cell' onClick={handleClick}>
-                <div className="cell-content">
-               {cells[number]}
+        <div className='cell' onClick={handleClick} >
+            <div className="cell-content">
+                {cells[number]}
             </div>
         </div>
     )

@@ -1,7 +1,8 @@
-.button-undo{
+.button {
     color: #3498DB;
     cursor: pointer;
     margin-top: 35px;
+    margin-bottom: 20px;
     padding: 15px 28px;
     border: 0;
     border: 1px solid #3498DB;
@@ -12,7 +13,7 @@
     text-transform: uppercase;
     letter-spacing: 2.16px;
 }
-.button-undo:hover {
+.button:hover {
     transition: all 0.3s ease;
     color: #fff;
     border-color: #47C972;
